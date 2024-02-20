@@ -1,55 +1,63 @@
-import { BotType } from "./types";
+import { BotType, ButtonListType } from "./types";
+
+import { InlineKeyboardMarkup } from "telegraf/typings/core/types/typegram";
 import { Markup } from "telegraf";
 
-export function setupRoutes(bot: BotType){
-  bot.command('start', async (ctx) => {
-    // Testo del messaggio
-    const messageText = '*Menù principale*\nSeleziona un\'azione';
+export class Routes{
+  bot: BotType;
 
-    // Opzioni per i pulsanti
-    const keyboard = Markup.inlineKeyboard([
-      Markup.button.callback('✏', 'action1'),
-      Markup.button.callback('Azione 2', 'action2'),
-      Markup.button.callback('Azione 3', 'action3'),
-    ]);
+  constructor(bot: BotType){
+    this.bot = bot
+    this.setupListRoutes()
+    this.setupMenuRoutes()
+  }
 
-    // Invia il messaggio con i pulsanti
-    await ctx.replyWithMarkdownV2(messageText, keyboard);
-  });
-
-  // Gestisci le azioni dei pulsanti
-  bot.action('action1', async (ctx) => {
-    await ctx.answerCbQuery('Hai premuto Azione 1');
-    // Puoi inserire qui la logica associata all'Azione 1
-  });
-
-  bot.action('action2', async (ctx) => {
-    await ctx.answerCbQuery('Hai premuto Azione 2');
-    // Puoi inserire qui la logica associata all'Azione 2
-  });
-
-  bot.action('action3', async (ctx) => {
-    await ctx.answerCbQuery('Hai premuto Azione 3');
-    // Puoi inserire qui la logica associata all'Azione 3
-  });
-  bot.command('done', (ctx) => {
-    ctx.reply('Hai eseguito il comando /done!');
-  });
-  bot.command('undone', (ctx) => {
-    ctx.reply('Hai eseguito il comando /undone!');
-  });
-  bot.command('uncheck', (ctx) => {
-    ctx.reply('Hai eseguito il comando /uncheck!');
-  });
-  bot.command('check', (ctx) => {
-    ctx.reply('Hai eseguito il comando /check!');
-  });
-}
-
-function listRoutes(bot:BotType){
-
-}
-
-function menuRoutes(bot:BotType){
+  setupListRoutes(){
+    this.bot.command('done', (ctx) => {
+      ctx.reply('Hai eseguito il comando /done!');
+    });
+    this.bot.command('undone', (ctx) => {
+      ctx.reply('Hai eseguito il comando /undone!');
+    });
+    this.bot.command('uncheck', (ctx) => {
+      ctx.reply('Hai eseguito il comando /uncheck!');
+    });
+    this.bot.command('check', (ctx) => {
+      ctx.reply('Hai eseguito il comando /check!');
+    });
+  }
+  setupMenuRoutes(){
+    this.bot.command('start', async (ctx) => {
+      const messageText = '*Menù principale*\n\nScegli l\'azione che vuoi eseguire:';
   
+      const buttonsList: ButtonListType= Markup.inlineKeyboard([[
+        Markup.button.callback('Aggiungi ➕', 'action1'),
+        Markup.button.callback('Modifica ✏', 'action1'),],
+        [
+          Markup.button.callback('Impostazioni gruppi 👥', 'action4'),
+          Markup.button.callback('Mostra shortcuts', 'action4'),
+        ],
+        [Markup.button.callback('Tutorial', 'action3'),
+        Markup.button.callback('Dona 💲', 'action2'),
+        ],]);
+  
+      await ctx.replyWithMarkdownV2(messageText, buttonsList);
+    });
+  
+    // Gestisci le azioni dei pulsanti
+    this.bot.action('action1', async (ctx) => {
+      await ctx.answerCbQuery('Hai premuto Azione 1');
+      // Puoi inserire qui la logica associata all'Azione 1
+    });
+  
+    this.bot.action('action2', async (ctx) => {
+      await ctx.answerCbQuery('Hai premuto Azione 2');
+      // Puoi inserire qui la logica associata all'Azione 2
+    });
+  
+    this.bot.action('action3', async (ctx) => {
+      await ctx.answerCbQuery('Hai premuto Azione 3');
+      // Puoi inserire qui la logica associata all'Azione 3
+    });
+  }
 }
