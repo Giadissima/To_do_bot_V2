@@ -2,6 +2,7 @@ import { BotType, ButtonListType } from "./types";
 
 import { InlineKeyboardMarkup } from "telegraf/typings/core/types/typegram";
 import { Markup } from "telegraf";
+import { createList } from "./list/create";
 
 export class Routes{
   bot: BotType;
@@ -31,8 +32,8 @@ export class Routes{
       const messageText = '*Menù principale*\n\nScegli l\'azione che vuoi eseguire:';
   
       const buttonsList: ButtonListType= Markup.inlineKeyboard([[
-        Markup.button.callback('Aggiungi ➕', 'action1'),
-        Markup.button.callback('Modifica ✏', 'action1'),],
+        Markup.button.callback('Aggiungi ➕', 'add'),
+        Markup.button.callback('Modifica ✏', 'modify'),],
         [
           Markup.button.callback('Impostazioni gruppi 👥', 'action4'),
           Markup.button.callback('Mostra shortcuts', 'action4'),
@@ -44,8 +45,14 @@ export class Routes{
       await ctx.replyWithMarkdownV2(messageText, buttonsList);
     });
   
-    // Gestisci le azioni dei pulsanti
-    this.bot.action('action1', async (ctx) => {
+    this.bot.action('add', (ctx) => {
+      // Chiamare createList e gestire la Promise con .then()
+      createList(this.bot, ctx).then(() => {
+        // Continuare con il codice dopo che createList è stata completata
+        console.log('Operazione completata');
+      });
+    });
+    this.bot.action('modify', async (ctx) => {
       await ctx.answerCbQuery('Hai premuto Azione 1');
       // Puoi inserire qui la logica associata all'Azione 1
     });
